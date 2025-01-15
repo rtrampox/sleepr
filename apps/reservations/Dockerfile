@@ -1,21 +1,22 @@
-FROM node:21-alpine as dev
+FROM node:21-alpine AS dev
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY tsconfig.json tsconfig.json
+COPY nest-cli.json nest-cli.json
 
 RUN npm install -g pnpm
 
-RUN pnpm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 COPY apps/reservations apps/reservations
 COPY libs libs
 
-RUN pnpm run build
+RUN pnpm run build reservations
 
-FROM node:21-alpine as prod
+FROM node:21-alpine AS prod
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -27,7 +28,7 @@ COPY pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
 
-RUN pnpm install --prod
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
 
 COPY --from=dev /usr/src/app/dist ./dist
 
