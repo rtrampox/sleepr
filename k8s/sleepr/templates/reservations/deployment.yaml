@@ -15,5 +15,5 @@ spec:
         app: reservations
     spec:
       containers:
-      - image: ghcr.io/rtrampox/sleepr/reservations/production
-        name: reservations
+        - image: southamerica-east1-docker.pkg.dev/sleepr-447906/reservations/production
+          name: reservations
