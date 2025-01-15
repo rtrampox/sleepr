@@ -16,7 +16,7 @@ import { HealthModule } from '@app/common/health';
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/auth/.env',
+      envFilePath: ['./apps/auth/.env', './.env'],
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),

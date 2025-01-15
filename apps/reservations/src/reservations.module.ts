@@ -26,7 +26,7 @@ import { HealthModule } from '@app/common/health';
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/reservations/.env',
+      envFilePath: ['./apps/reservations/.env', './.env'],
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().required(),
@@ -42,10 +42,10 @@ import { HealthModule } from '@app/common/health';
       {
         name: AUTH_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'auth_queue',
           },
         }),
         inject: [ConfigService],
@@ -53,10 +53,10 @@ import { HealthModule } from '@app/common/health';
       {
         name: PAYMENTS_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('PAYMENTS_HOST'),
-            port: configService.get('PAYMENTS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'payments_queue',
           },
         }),
         inject: [ConfigService],

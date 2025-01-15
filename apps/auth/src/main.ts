@@ -12,8 +12,11 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
-    options: { host: '0.0.0.0', port: configService.get('TCP_PORT') },
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+      queue: 'auth_queue',
+    },
   });
 
   app.use(cookieParser());

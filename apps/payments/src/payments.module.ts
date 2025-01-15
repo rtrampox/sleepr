@@ -10,7 +10,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/payments/.env',
+      envFilePath: ['./apps/payments/.env', './.env'],
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
         STRIPE_SECRET_KEY: Joi.string().required(),
@@ -23,10 +23,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       {
         name: NOTIFICATIONS_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('NOTIFICATIONS_HOST'),
-            port: configService.get('NOTIFICATIONS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'notifications_queue',
           },
         }),
         inject: [ConfigService],

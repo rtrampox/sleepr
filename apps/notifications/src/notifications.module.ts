@@ -10,7 +10,7 @@ import * as Joi from 'joi';
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './apps/notifications/.env',
+      envFilePath: ['./apps/notifications/.env', './.env'],
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
 
