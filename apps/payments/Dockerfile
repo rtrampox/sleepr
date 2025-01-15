@@ -9,7 +9,7 @@ COPY nest-cli.json nest-cli.json
 
 RUN npm install -g pnpm
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+RUN pnpm install
 
 COPY apps/payments apps/payments
 COPY libs libs
@@ -28,7 +28,7 @@ COPY pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
+RUN pnpm install --prod
 
 COPY --from=dev /usr/src/app/dist ./dist
 
